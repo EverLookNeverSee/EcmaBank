@@ -56,6 +56,7 @@ const account4 = {
   pin: 4444,
 };
 
+////////////////////////////////////////////////////////////////////////////////////
 
 const displayMovements = function (movements) {
   containerMovements.innerHTML = "";
@@ -72,6 +73,16 @@ const displayMovements = function (movements) {
 
 displayMovements(account1.movements)
 
+////////////////////////////////////////////////////////////////////////////////////
+
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} EUR`;
+}
+
+calcDisplayBalance(account1.movements);
+
+////////////////////////////////////////////////////////////////////////////////////
 
 const createUsernames = function (accs) {
   accs.forEach(function (acc) {
@@ -81,4 +92,3 @@ const createUsernames = function (accs) {
 
 const accounts = [account1, account2, account3, account4];
 createUsernames(accounts);
-console.log(accounts);

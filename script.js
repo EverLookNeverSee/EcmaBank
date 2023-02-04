@@ -89,9 +89,9 @@ const calcDisplaySummary = function (acc) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} 💶`;
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance} 💶`;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +104,12 @@ const createUsernames = function (accs) {
 
 const accounts = [account1, account2, account3, account4];
 createUsernames(accounts);
+
+const updateUI = function (acc) {
+  displayMovements(acc.movements);
+  calcDisplayBalance(acc);
+  calcDisplaySummary(acc);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Event handlers:
@@ -120,11 +126,20 @@ btnLogin.addEventListener("click", function (ev) {
     // Display UI and welcome message
     labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
     containerApp.style.opacity = "100";
-    // Display movements
-    displayMovements(currentAccount.movements);
-    // Display balance
-    calcDisplayBalance(currentAccount.movements);
-    // Display summary
-    calcDisplaySummary(currentAccount);
+    updateUI(currentAccount);
+  }
+})
+
+
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAccount = accounts.find(acc => acc.username ===inputTransferTo.value);
+  inputTransferAmount.value = inputTransferTo.value = "";
+  if (amount > 0 && receiverAccount && currentAccount.balance >= amount &&
+      receiverAccount?.username !== currentAccount.username) {
+    currentAccount.movements.push(-amount);
+    receiverAccount.movements.push(amount);
+    updateUI(currentAccount);
   }
 })

@@ -71,24 +71,21 @@ const displayMovements = function (movements) {
   })
 }
 
-displayMovements(account1.movements)
-
 ////////////////////////////////////////////////////////////////////////////////////
 
-const calcDisplaySummary = function (movements) {
-  const incomes = movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}💶`;
 
-  const outcomes = movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov , 0);
+  const outcomes = acc.movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov , 0);
   labelSumOut.textContent = `${Math.abs(outcomes)}💶`
 
-  const interest = movements.filter(mov => mov > 0).map(deposit  => deposit * 1.2 / 100)
+  const interest = acc.movements.filter(mov => mov > 0)
+    .map(deposit  => deposit * acc.interestRate / 100)
     .filter(int => int >= 1)
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interest}💶`
 }
-
-calcDisplaySummary(account1.movements);
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,8 +93,6 @@ const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${balance} 💶`;
 }
-
-calcDisplayBalance(account1.movements);
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -109,3 +104,27 @@ const createUsernames = function (accs) {
 
 const accounts = [account1, account2, account3, account4];
 createUsernames(accounts);
+
+////////////////////////////////////////////////////////////////////////////////////
+// Event handlers:
+let currentAccount;
+btnLogin.addEventListener("click", function (ev) {
+  // Prevent form from submitting
+  ev.preventDefault();
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // Clear input fields
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    // Display UI and welcome message
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}`;
+    containerApp.style.opacity = "100";
+    // Display movements
+    displayMovements(currentAccount.movements);
+    // Display balance
+    calcDisplayBalance(currentAccount.movements);
+    // Display summary
+    calcDisplaySummary(currentAccount);
+  }
+})

@@ -111,6 +111,18 @@ const calcDisplayBalance = function (acc) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+const colorizeRows = function () {
+  [...document.querySelectorAll(".movements__value")].forEach((value) => {
+    if (Number.parseFloat(value.textContent) > 0) {
+      value.parentElement.style.backgroundColor = "#ebfbee";
+    }
+    if (Number.parseFloat(value.textContent) < 0) {
+      value.parentElement.style.backgroundColor = "#fff5f5";
+    }
+  })
+}
+
+////////////////////////////////////////////////////////////////////////////////////
 const createUsernames = function (accs) {
   accs.forEach(function (acc) {
     acc.username = acc.owner.toLowerCase().split(" ").map(name => name[0]).join("");
@@ -123,6 +135,7 @@ const updateUI = function (acc) {
   displayMovements(acc.movements);
   calcDisplayBalance(acc);
   calcDisplaySummary(acc);
+  colorizeRows();
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -182,7 +182,7 @@ const startLogOutTimer = function () {
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Event handlers:
-let currentAccount;
+let currentAccount, timer;
 btnLogin.addEventListener("click", function (ev) {
   // Prevent form from submitting
   ev.preventDefault();
@@ -205,6 +205,8 @@ btnLogin.addEventListener("click", function (ev) {
       year: "numeric",
     }
     labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now);
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
     updateUI(currentAccount);
   }
 });
@@ -223,6 +225,8 @@ btnTransfer.addEventListener("click", function (e) {
     currentAccount.movementsDates.push(new Date().toISOString());
     receiverAccount.movementsDates.push(new Date().toISOString());
     updateUI(currentAccount);
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -238,6 +242,8 @@ btnLoan.addEventListener("click", function (e) {
       updateUI(currentAccount);
     }, 2500);
   }
+  clearInterval(timer);
+  timer = startLogOutTimer();
   inputLoanAmount.value = "";
 });
 
@@ -259,4 +265,6 @@ btnSort.addEventListener("click", function (e) {
   e.preventDefault();
   displayMovements(currentAccount.movements, !sorted);
   sorted = !sorted;
+  clearInterval(timer);
+  timer = startLogOutTimer();
 });

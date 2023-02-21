@@ -83,6 +83,13 @@ const formatMovementDate = function (date, locale) {
   else return Intl.DateTimeFormat(locale).format(date);
 }
 
+const formatCur = function (value, locale, currency) {
+  return Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency
+  }).format(value);
+}
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = "";
   const movs = sort ? acc.movements.slice().sort((a, b) => a - b) : acc.movements;

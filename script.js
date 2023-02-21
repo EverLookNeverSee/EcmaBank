@@ -161,6 +161,25 @@ const updateUI = function (acc) {
   colorizeRows();
 };
 
+const startLogOutTimer = function () {
+  const tick = () => {
+    const minute = String(Math.trunc(time / 60)).padStart(2, "0");
+    const second = String(time % 60).padStart(2, "0");
+    labelTimer.textContent = `${minute}:${second}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = "Login to get started";
+      containerApp.style.opacity = "0";
+    }
+    time--;
+  }
+  let time = 60;
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 // Event handlers:
 let currentAccount;
